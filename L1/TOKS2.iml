@@ -10,7 +10,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/Downloads/jSSC-2.7.0-Release/jssc.jar!/" />
+          <root url="jar://$USER_HOME$/Documents/Учёба/3-ий курс/1-ый семестр/ТОКС/Лабы/L1/jSSC-2.7.0-Release/jssc.jar/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

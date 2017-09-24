@@ -37,6 +37,9 @@ public class PortGUI {
     }
 
     public int getStopbit() {
+        if (stopbit.getValue().toString() == "1.5") {
+            return 3;
+        }
         return Integer.parseInt(stopbit.getValue().toString());
     }
 
@@ -54,6 +57,13 @@ public class PortGUI {
             default: return 0;
         }
 
+    }
+
+    private void portParametresFormesDisable(boolean flag) {
+        baudrate.setDisable(flag);
+        databits.setDisable(flag);
+        stopbit.setDisable(flag);
+        parity.setDisable(flag);
     }
 
     public void setGUI(Pane pane, int y) {
@@ -160,10 +170,15 @@ public class PortGUI {
         d.setOnAction(disconnectListener);
         d.setDisable(true);
 
+        portParametresFormesDisable(true);
+
         stage.setOnHiding( event -> { serialPort.close(); } );
 
     }
 
+    /**
+     * Отвечает за изменение параметров порта
+     */
     private EventHandler<ActionEvent> changeParametersListener = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
@@ -205,6 +220,8 @@ public class PortGUI {
                     d.setDisable(false);
                     s.setDisable(false);
                     port.setDisable(true);
+
+                    portParametresFormesDisable(false);
                 } catch(RuntimeException e) {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Не удаётся подсоединиться к порту!", ButtonType.OK);
                     alert.showAndWait();
@@ -227,6 +244,8 @@ public class PortGUI {
                     d.setDisable(true);
                     s.setDisable(true);
                     port.setDisable(false);
+
+                    portParametresFormesDisable(true);
                 } catch(RuntimeException e) {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Не удаётся разорвать соединение с портом!", ButtonType.OK);
                     alert.showAndWait();
