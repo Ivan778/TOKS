@@ -1,5 +1,3 @@
-package ByteStuffing;
-
 import java.util.List;
 
 public class EncryptData {
