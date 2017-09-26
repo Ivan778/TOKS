@@ -7,6 +7,8 @@ import javafx.stage.Stage;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 
+import java.util.List;
+
 public class PortGUI {
     private TextArea area;
     private ChoiceBox baudrate;
@@ -198,7 +200,14 @@ public class PortGUI {
         public void handle(ActionEvent event) {
             try {
                 serialPort.getSerialPort().setParams(getBaudrate(), getDatabits(), getStopbit(), getParity());
-                serialPort.getSerialPort().writeString(area.getText());
+
+                EncryptPacket p = new EncryptPacket("/dev/ttys002", "/dev/ttys001");
+                List<byte[]> packets = p.packetsList(area.getText());
+
+                for (int i = 0; i < packets.size(); i++) {
+                    serialPort.getSerialPort().writeBytes(packets.get(i));
+                }
+
                 area.clear();
             } catch (SerialPortException e) {
                 e.printStackTrace();
