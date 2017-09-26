@@ -1,10 +1,10 @@
+import Crypting.*;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import jssc.SerialPort;
 import jssc.SerialPortException;
 
 import java.util.List;
@@ -15,7 +15,10 @@ public class PortGUI {
     private ChoiceBox databits;
     private ChoiceBox stopbit;
     private ChoiceBox parity;
+
     private ChoiceBox port;
+    private TextField destinationPort;
+
     private Button s, c, d;
     private Stage stage;
 
@@ -108,6 +111,13 @@ public class PortGUI {
         port.setLayoutY(5);
         pane.getChildren().add(port);
 
+        // Выбор порта
+        destinationPort = new TextField();
+        destinationPort.setLayoutX(476);
+        destinationPort.setLayoutY(5);
+        destinationPort.setMaxSize(120, 20);
+        pane.getChildren().add(destinationPort);
+
         // Выбор скорости передачи (baud rate)
         baudrate = new ChoiceBox(FXCollections.observableArrayList("110", "300", "600", "1200", "4800", "9600", "14400",
                 "19200", "38400", "57600", "115200", "128000", "256000"));
@@ -198,19 +208,34 @@ public class PortGUI {
     private EventHandler<ActionEvent> sendListener = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
-            try {
-                serialPort.getSerialPort().setParams(getBaudrate(), getDatabits(), getStopbit(), getParity());
+            if (destinationPort.getText().equals(port.getValue().toString()) == false) {
+                try {
+                    serialPort.getSerialPort().setParams(getBaudrate(), getDatabits(), getStopbit(), getParity());
 
-                EncryptPacket p = new EncryptPacket("/dev/ttys002", "/dev/ttys001");
-                List<byte[]> packets = p.packetsList(area.getText());
+                    EncryptPacket p = new EncryptPacket(destinationPort.getText(), port.getValue().toString());
+                    List<byte[]> packets = p.packetsList(area.getText());
 
-                for (int i = 0; i < packets.size(); i++) {
-                    serialPort.getSerialPort().writeBytes(packets.get(i));
+                    int len = 0;
+                    for (int i = 0; i < packets.size(); i++) {
+                        len += packets.get(i).length;
+                    }
+                    System.out.println(len);
+
+                    for (int i = 0; i < packets.size(); i++) {
+                        serialPort.getSerialPort().writeBytes(packets.get(i));
+                        for (int j = 0; j < packets.get(i).length; j++) {
+                            System.out.print(packets.get(i)[j]);
+                        }
+                        System.out.println();
+                    }
+
+                    area.clear();
+                } catch (SerialPortException e) {
+                    e.printStackTrace();
                 }
-
-                area.clear();
-            } catch (SerialPortException e) {
-                e.printStackTrace();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Нельзя отправить данные в тот же порт, из которого они отправляются! Выберите другой порт.", ButtonType.OK);
+                alert.showAndWait();
             }
         }
     };

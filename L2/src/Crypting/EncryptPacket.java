@@ -1,9 +1,11 @@
+package Crypting;
+
 import sun.jvm.hotspot.runtime.Bytes;
 
 import java.util.ArrayList;
 import java.util.List;
 
-class EncryptPacket {
+public class EncryptPacket {
     private String destinationAddress, sourceAddress;
 
     public EncryptPacket(String destinationAddress, String sourceAddress) {
@@ -94,6 +96,11 @@ class EncryptPacket {
         return packet;
     }
 
+    /**
+     * Возвращает пакеты в формате листа типа List<Byte>
+     * @param data
+     * @return
+     */
     private List<List<Byte>> getPackets(String data) {
         // Сюда будем складировать готовые пакеты
         List<List<Byte>> packets = new ArrayList<List<Byte>>();
@@ -140,18 +147,14 @@ class EncryptPacket {
                 for (int i = endPoint * 100; i < payload.size(); i++) {
                     p.add(payload.get(i));
                 }
-                while (p.size() < 100) {
-                    p.add((byte) 32);
-                }
+
                 packets.add(createPacket(p));
                 p.clear();
             } else {
                 for (int i = endPoint * 100 + 1; i < payload.size(); i++) {
                     p.add(payload.get(i));
                 }
-                while (p.size() < 100) {
-                    p.add((byte) 32);
-                }
+
                 packets.add(createPacket(p));
                 p.clear();
             }
