@@ -105,7 +105,7 @@ public class PortGUI {
         pane.getChildren().add(lP);
 
         // Выбор порта
-        port = new ChoiceBox(FXCollections.observableArrayList("/dev/ttys001", "/dev/ttys002"));
+        port = new ChoiceBox(FXCollections.observableArrayList("/dev/ttys001", "/dev/ttys004"));
         port.getSelectionModel().selectFirst();
         port.setLayoutX(5);
         port.setLayoutY(5);
@@ -227,6 +227,12 @@ public class PortGUI {
                             System.out.print(packets.get(i)[j]);
                         }
                         System.out.println();
+                        // Устанавливаем задержку между отправкой пакетов, чтобы буфер не переполнился
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     area.clear();
