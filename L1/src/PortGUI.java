@@ -100,7 +100,7 @@ public class PortGUI {
         pane.getChildren().add(lP);
 
         // Выбор порта
-        port = new ChoiceBox(FXCollections.observableArrayList("/dev/ttys001", "/dev/ttys002"));
+        port = new ChoiceBox(FXCollections.observableArrayList("/dev/ttys001", "/dev/ttys002", "/dev/ttys004", "/dev/ttys005"));
         port.getSelectionModel().selectFirst();
         port.setLayoutX(5);
         port.setLayoutY(5);
